@@ -1,0 +1,15 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: grey;
+}
+
+.navLinks {
+    list-style: none;
+}
+
+.link {
+    text-decoration: none;
+    color: black;
+}
