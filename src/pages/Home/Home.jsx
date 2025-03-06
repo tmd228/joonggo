@@ -1,16 +1,25 @@
 import styles from './Home.module.css'
 import { auth } from '../../config/firebase'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Home() {
-    const currentUser = auth.currentUser
-
+    
+    //current user 콘솔에 출력
+    const [currentUser, setCurrentUser] = useState(null)
     useEffect(() => {
-        console.log(currentUser)
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            setCurrentUser(user)
+            console.log(user)
+        })
+
+        return () => unsubscribe()
     }, [])
 
-    
     return (
-        <div>Home</div>
+        <div>
+            <div>Home</div>
+            <Link className={styles.newPostBtn} to={currentUser ? '/newPost' : '/signIn'}>게시글작성</Link>
+        </div>
     )
 }

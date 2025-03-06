@@ -1,0 +1,7 @@
+.newPostBtn {
+    text-decoration: none;
+    color: black;
+    padding: 12px 14px;
+    background-color: grey;
+    display: inline-block;
+}
