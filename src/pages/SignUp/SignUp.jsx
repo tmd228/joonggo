@@ -14,6 +14,7 @@ export default function SignUp() {
     const [email, setEmail] = useState('')
     const [nickname, setNickname] = useState('')
     const [password, setPassword] = useState('')
+    const [checkingPassword, setCheckingPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
 
@@ -29,6 +30,12 @@ export default function SignUp() {
 
     async function handleSignUp(event) {
         event.preventDefault();
+        setErrorMessage('')
+        if (password !== checkingPassword) {
+            setErrorMessage('비밀번호 확인이 비밀번호와 일치하지 않습니다.')
+            return
+        }
+
         try {
             //firebase auth를 이용해 가입
             const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -75,8 +82,11 @@ export default function SignUp() {
                     <label htmlFor="nickname">닉네임</label>
                     <input type="text" id='nickname' value={nickname} placeholder='김또깡' onChange={(e) => setNickname(e.target.value)} required />
 
-                    <label htmlFor="password">비밀번호</label>
+                    <label htmlFor="password">비밀번호 (6자이상)</label>
                     <input type="password" id='password' value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+                    <label htmlFor="checkingPassword">비밀번호 확인</label>
+                    <input type="password" id='checkingPassword' value={checkingPassword} onChange={(e) => setCheckingPassword(e.target.value)} required />
 
                     {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
