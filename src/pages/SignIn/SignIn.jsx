@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { auth } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export default function SignIn() {
@@ -11,6 +12,16 @@ export default function SignIn() {
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
+
+    //비정상적인 루트로 로그인이 돼있는 상태로 로그인 페이지로 갔을경우 다시 홈페이지 이동
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                navigate('/');
+            }
+        });
+        return () => unsubscribe(); // Cleanup (안전하게 메모리 정리)
+    }, []);
 
     //임시 파이어베이스 요금폭탄 방지
     let lastWriteTime = useRef(0)
@@ -42,13 +53,7 @@ export default function SignIn() {
             await signInWithEmailAndPassword(auth, email, password)
             navigate('/')
         } catch (err) {
-            if (err.code === "auth/user-not-found") {
-                setErrorMessage("존재하지 않는 이메일입니다.");
-            } else if (err.code === "auth/wrong-password") {
-                setErrorMessage("비밀번호가 올바르지 않습니다.");
-            } else {
-                setErrorMessage("로그인 실패. 이메일과 비밀번호를 확인해주세요.");
-            }
+            setErrorMessage("이메일 주소와 비밀번호를 확인해 주세요.")
         }
     }
 
@@ -67,12 +72,13 @@ export default function SignIn() {
 
                     <label htmlFor="password">비밀번호</label>
                     <input type="password" id="password" name="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <p className={styles.forgotPassword}><Link to='/findPassword'>비밀번호 찾기</Link></p>
                     {/* 에러 메시지 출력 */}
-                    {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>} 
+                    {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
                     <button className={styles.signInButton} type="submit">로그인</button>
                 </form>
-                <p>계정이 없으신가요? <Link to='/signUp'>회원가입</Link></p>
+                <p className={styles.signUp}>계정이 없으신가요? <Link to='/signUp'>회원가입</Link></p>
             </div>
         </div>
     );

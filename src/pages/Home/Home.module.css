@@ -5,3 +5,39 @@
     background-color: grey;
     display: inline-block;
 }
+
+/* 포스팅 임시 스타일링 지워도됨 */
+.postList {
+    display: flex;
+}
+
+.post {
+    margin: 10px;
+    width: 240px;
+    overflow: hidden;
+}
+
+.postImage {
+    width: 240px;
+    height: 160px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.postTitle {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.postPrice {
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.postTexts {
+    margin-left: 2px;
+    margin-top: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
