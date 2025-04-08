@@ -49,11 +49,20 @@ export default function SignUp() {
                 nickname: nickname
             })
 
-            //가입할때 selling_posts 빈 collection 추가
-            const docRef = await addDoc(collection(db, "users", user.uid, "selling_posts"), {
-                initialized: true // 빈 문서를 추가하여 컬렉션이 생성되도록 함
-            });
+            
+            await setDoc(doc(db, "users-public", user.uid), {
+                uid: user.uid,
+                createdAt: serverTimestamp(),
+                nickname: nickname
+            })
 
+            //가입할때 selling_posts 빈 collection 추가 - 필요없다고 판단
+            //2번 쓰기를 하는것보다 쿼리를 이용해서 posts 컬렉션에서 필터링 하는게 비용적으로 이득
+            // await addDoc(collection(db, "users-public", user.uid, "selling_posts"), {
+            //     initialized: true // 빈 문서를 추가하여 컬렉션이 생성되도록 함
+            // });
+
+            
             //회원가입이 성공적이면 홈페이지로 이동
             navigate('/')
             //나중에 로그인페이지로 넘어가기 전 페이지로 이동하게 만들기

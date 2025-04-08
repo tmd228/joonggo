@@ -9,12 +9,14 @@
 /* 포스팅 임시 스타일링 지워도됨 */
 .postList {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .post {
     margin: 10px;
     width: 240px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .postImage {

@@ -7,6 +7,7 @@ import SignIn from './pages/SignIn/SignIn'
 import SignUp from './pages/SignUp/SignUp'
 import NewPost from './pages/NewPost/NewPost'
 import FindPassword from './pages/FindPassword/FindPassword'
+import PostDetail from './pages/PostDetail/PostDetail'
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path='/signUp' element={<SignUp />}/>
         <Route path='/findPassword' element={<FindPassword />}/>
         <Route path='/newPost' element={<NewPost />}/>
+        <Route path='/post/:id' element={<PostDetail />} />
       </Routes>
 
     </div>

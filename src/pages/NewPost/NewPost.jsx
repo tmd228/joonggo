@@ -5,6 +5,7 @@ import { storage, db, auth } from "../../config/firebase"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { serverTimestamp, addDoc, updateDoc, collection, doc, Timestamp } from "firebase/firestore"
 import { useNavigate } from "react-router-dom"
+import imageCompression from "browser-image-compression"
 
 
 export default function NewPost() {
@@ -19,9 +20,21 @@ export default function NewPost() {
     const [images, setImages] = useState(null)
     const navigate = useNavigate()
 
-    //추가할 기능!
-    //사진 압축기능 추가하기 - 비용절감
-
+    //사진 압축기능 - 비용절감
+    async function compressImage (image) {
+        
+        try {
+            const options = {
+                maxSizeMB: 0.5, // 최대 0.5MB로 압축
+                maxWidthOrHeight: 1280, // 최대 1280px로 조정
+                useWebWorker: true, // 성능 최적화
+            };
+            const compressedImage = await imageCompression(image, options)
+            return compressedImage
+        } catch (err) {
+            console.log('compression failed!', err)
+        }
+    }
 
     async function handleNewPost(event) {
         event.preventDefault()
@@ -42,10 +55,11 @@ export default function NewPost() {
 
         try {
             const uploadPromises = images.map(async (file) => {
-                const uniqueFileName = `${uuidv4()}`; // 🔥 UUID로 파일명 생성
+                const compressedImage = await compressImage(file)
+                const uniqueFileName = `${uuidv4()}`;
                 const storageRef = ref(storage, `posts/${uniqueFileName}`);
-                await uploadBytes(storageRef, file);
-                return getDownloadURL(storageRef); // 🔥 업로드 후 URL 반환
+                await uploadBytes(storageRef, compressedImage);
+                return await getDownloadURL(storageRef);
             })
 
             const imageUrls = await Promise.all(uploadPromises); // ✅ 모든 이미지 URL 가져오기
@@ -67,10 +81,8 @@ export default function NewPost() {
             // ✅ 생성된 문서 내부에 postUid 저장
             await updateDoc(doc(db, "joonggo_posts", postRef.id), { postUid: postRef.id });
             navigate('/')
-        }
 
-
-        catch (err) {
+        } catch (err) {
             console.log(err)
             console.dir(err)
         }
