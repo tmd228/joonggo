@@ -81,22 +81,3 @@
 .labelInputContainer.two label {
     margin-top: 8px;
 }
-
-
-/* 새로운 사진첨부 */
-
-.imageAttach {
-    display: flex;
-    width: 100%;
-    gap: 10px;
-}
-
-.imageBox {
-    width: 100px;
-    height: 100px;
-    background-color: grey;
-}
-
-.imageInput {
-    display: none;
-}

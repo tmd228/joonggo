@@ -41,6 +41,7 @@ export default function Home() {
     return (
         <div>
             <Link className={styles.newPostBtn} to={currentUser ? '/newPost' : '/signIn'}>게시글작성</Link>
+            <Link className={styles.newPostBtn} to='/test'>테스트페이지</Link>
             <div className={styles.postList}>
                 {posts.map(post => {
                     return <div key={post.id} className={styles.post} onClick={() => navigate(`/post/${post.id}`)}>

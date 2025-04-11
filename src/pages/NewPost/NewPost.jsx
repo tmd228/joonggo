@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import styles from "./NewPost.module.css"
 import { v4 as uuidv4 } from "uuid"
 import { storage, db, auth } from "../../config/firebase"
@@ -9,6 +9,17 @@ import imageCompression from "browser-image-compression"
 
 
 export default function NewPost() {
+
+    const imagesRef = useRef([])
+    const [images2, setImages2] = useState([null, null, null, null, null])
+
+    const handleUploadImage = (image, index) => {
+        if (image) {
+            let newImages = [...images2];
+            newImages[index] = image;
+            setImages2(newImages);
+        }
+    }
 
     //임시 파이어베이스 요금 폭탄 방지 - 1초제한
     let lastWriteTime = 0;
@@ -21,8 +32,8 @@ export default function NewPost() {
     const navigate = useNavigate()
 
     //사진 압축기능 - 비용절감
-    async function compressImage (image) {
-        
+    async function compressImage(image) {
+
         try {
             const options = {
                 maxSizeMB: 0.5, // 최대 0.5MB로 압축
@@ -92,34 +103,54 @@ export default function NewPost() {
         <div className={styles.newPostContainer}>
             <div className={styles.heading}>게시물 작성</div>
             <form className={styles.newPostForm} onSubmit={handleNewPost}>
-                
+
                 <div className={styles.labelInputContainer}>
-                <label htmlFor="title">제목</label>
-                <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} />
+                    <label htmlFor="title">제목</label>
+                    <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} />
                 </div>
 
                 <div className={styles.labelInputContainer}>
-                <label htmlFor="sellLocation">거래장소</label>
-                <input type="text" id="sellLocation" value={sellLocation} onChange={e => setSellLocation(e.target.value)} />
+                    <label htmlFor="sellLocation">거래장소</label>
+                    <input type="text" id="sellLocation" value={sellLocation} onChange={e => setSellLocation(e.target.value)} />
                 </div>
                 {/* 상품 상태 체크박스 */}
                 {/* 카테고리 */}
                 {/* 사진 */}
-                
+
                 <div className={styles.labelInputContainer}>
-                <label htmlFor="price">가격</label>
-                <input type="number" id="price" value={price} onChange={e => setPrice(e.target.value)} />
+                    <label htmlFor="price">가격</label>
+                    <input type="number" id="price" value={price} onChange={e => setPrice(e.target.value)} />
                 </div>
 
                 <div className={`${styles.labelInputContainer} ${styles.two}`}>
-                <label htmlFor="description">제품설명</label>
-                <textarea type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} />
+                    <label htmlFor="description">제품설명</label>
+                    <textarea type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} />
                 </div>
 
                 <div className={`${styles.labelInputContainer} ${styles.two}`}>
-                <label htmlFor="images">사진첨부</label>
-                <input type="file" id="images" multiple onChange={(e) => setImages([...e.target.files])} required />
+                    <label htmlFor="images">사진첨부</label>
+                    <input type="file" id="images" multiple onChange={(e) => setImages([...e.target.files])} required />
                 </div>
+
+                {/* 새로운 사진첨부 */}
+                <div className={`${styles.labelInputContainer} ${styles.two}`}>
+                    <label>사진첨부</label>
+                    <div className={styles.imageAttach}>
+                        {images2.map((image, index) => {
+                            return <div className={styles.imageAndInput} id={index}>
+                                <div className={styles.imageBox}
+                                onClick={() => {imagesRef.current[index].click()}}>
+                                    {image ? <img src={URL.createObjectURL(image)} style={{width: "100px", height: "100px", objectFit: "cover"}}></img> : <p></p>}
+                                </div>
+                                <input className={styles.imageInput} 
+                                type="file" accept="image/*" 
+                                ref={(el) => {imagesRef.current[index] = el}}
+                                onChange={(e) => { handleUploadImage(e.target.files[0], index) }} />
+                            </div>
+                        })}
+                    </div>
+                </div>
+
                 <div className={styles.buttonContainer}>
                     <button className={styles.newPostButton} type="submit">게시글 올리기</button>
                 </div>

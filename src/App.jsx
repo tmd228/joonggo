@@ -8,6 +8,10 @@ import SignUp from './pages/SignUp/SignUp'
 import NewPost from './pages/NewPost/NewPost'
 import FindPassword from './pages/FindPassword/FindPassword'
 import PostDetail from './pages/PostDetail/PostDetail'
+import EditPost from './pages/EditPost/EditPost'
+
+//테스트용
+import Test from './pages/Test/Test'
 
 function App() {
 
@@ -28,6 +32,8 @@ function App() {
         <Route path='/findPassword' element={<FindPassword />}/>
         <Route path='/newPost' element={<NewPost />}/>
         <Route path='/post/:id' element={<PostDetail />} />
+        <Route path='/edit/:postId' element={<EditPost />} />
+        <Route path='/test' element={<Test />} />
       </Routes>
 
     </div>
